@@ -1,0 +1,19 @@
+[project]
+name = "multi_terminal_launch"
+readme = "README.md"
+dynamic = ["version"]
+description = "Launch multiple terminals with commands"
+dependencies = []
+authors = [
+  {name = "Kevin DeMarco", email = "kevin.demarco@rifrobotics.com"},
+]
+maintainers = [
+  {name = "Kevin DeMarco", email = "kevin.demarco@rifrobotics.com"},
+]
+
+[project.scripts]
+multi_term_launch = "multi_terminal_launch.multi_terminal_launch:main_cli"
+
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
