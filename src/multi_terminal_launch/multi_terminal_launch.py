@@ -12,7 +12,10 @@ def main(args):
             print(exc)
             return -1
 
-    pre_command = info['pre_command']
+    try:
+        pre_command = info['pre_command']
+    except KeyError:
+        pre_command = None
 
     for terminal in info['terminals']:
         title = terminal['title']
@@ -29,7 +32,9 @@ def main(args):
         result = subprocess.run([f'xdotool windowactivate --sync {window_id}'],shell=True)
         time.sleep(0.2) # The --sync doesn't seem to work all the time
 
-        result = subprocess.run([f'xdotool type --clearmodifiers "{pre_command}"; xdotool key Return;'],shell=True)
+        if pre_command is not None:
+            result = subprocess.run([f'xdotool type --clearmodifiers "{pre_command}"; xdotool key Return;'],shell=True)
+
         result = subprocess.run([f'xdotool type --clearmodifiers "{cmd}"'],shell=True)
         if terminal['autorun']:
             result = subprocess.run(['xdotool key Return'],shell=True)
