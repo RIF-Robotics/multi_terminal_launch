@@ -12,10 +12,19 @@ def main(args):
             print(exc)
             return -1
 
+    # Run the system commands if they exist
     try:
-        pre_command = info['pre_command']
+        pre_commands = info['pre_commands']
+
+        for pre_command in pre_commands:
+            subprocess.call([f'{pre_command}'], shell=True)
     except KeyError:
-        pre_command = None
+        pass
+
+    try:
+        pre_terminal_command = info['pre_terminal_command']
+    except KeyError:
+        pre_terminal_command = None
 
     for terminal in info['terminals']:
         title = terminal['title']
@@ -32,8 +41,8 @@ def main(args):
         result = subprocess.run([f'xdotool windowactivate --sync {window_id}'],shell=True)
         time.sleep(0.2) # The --sync doesn't seem to work all the time
 
-        if pre_command is not None:
-            result = subprocess.run([f'xdotool type --clearmodifiers "{pre_command}"; xdotool key Return;'],shell=True)
+        if pre_terminal_command is not None:
+            result = subprocess.run([f'xdotool type --clearmodifiers "{pre_terminal_command}"; xdotool key Return;'],shell=True)
 
         result = subprocess.run([f'xdotool type --clearmodifiers "{cmd}"'],shell=True)
         if terminal['autorun']:
@@ -57,6 +66,15 @@ def main(args):
         time.sleep(0.5)
 
         result = subprocess.run([f'xdotool windowclose {window_id}'],shell=True)
+
+    # Run the system commands if they exist
+    try:
+        post_commands = info['post_commands']
+
+        for post_command in post_commands:
+            subprocess.call([f'{post_command}'], shell=True)
+    except KeyError:
+        pass
 
 
 def get_args_parser():
